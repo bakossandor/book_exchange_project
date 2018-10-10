@@ -4,7 +4,7 @@ module.exports = {
     register(req, res, next) {
         const schema = Joi.object().keys({
             email: Joi.string().email().required(),
-            password: Joi.string().regex(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/).required()
+            password: Joi.string().regex(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/).required()
         })
 
         Joi.validate(req.body, schema, (error, value) => {
