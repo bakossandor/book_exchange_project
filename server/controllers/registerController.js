@@ -15,7 +15,12 @@ module.exports = {
                 message: `${user.email} registered successfully`
             })
         } catch (error) {
-            console.log("error with the request", error)
+            if (error.name === "MongoError") {
+                console.log(`error with the request | error code : -- ${error.code} -- error message : -- ${error.errmsg}`)
+                res.status(400).send({
+                    error: `Error: ${user.email} email adress has been already registered`
+                })
+            }
             res.status(400).send({
                 error
             })

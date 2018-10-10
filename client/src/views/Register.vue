@@ -7,7 +7,7 @@
                         <v-toolbar-title>Register</v-toolbar-title>
                     </v-toolbar>
                     <v-card-text>
-                        <v-form ref="form">
+                        <v-form v-model="valid">
                             <v-text-field 
                                 color="green lighten-1" 
                                 prepend-icon="person" 
@@ -41,10 +41,24 @@
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                            <v-btn color="success" class="black--text" @click.prevent="register">Login</v-btn>
+                            <v-btn 
+                                color="success" 
+                                :disabled=!valid 
+                                class="black--text" 
+                                @click.prevent="register"
+                                :loading="loading"
+                            >Register</v-btn>
                         <v-spacer></v-spacer>
                     </v-card-actions>
                 </v-card>
+
+                <v-alert
+                    :value="error"
+                    color="error"
+                    icon="warning"
+                    outline
+                >{{ error }}</v-alert>
+
             </v-flex>
         </v-layout>
     </v-container>
@@ -54,11 +68,12 @@ import Authservice from "../util/authservice.js";
 export default {
     data() {
         return {
-            valid: false,
+            valid: "",
             email: "",
             password: "",
             confirmPassword: "",
-            error: null,
+            error: false,
+            loading: false,
             rules: {
                 required: value => !!value || "Required.",
                 email: value => {
@@ -80,16 +95,21 @@ export default {
     },
     methods: {
         async register() {
+            this.loading = true
             try {
-                await Authservice.register({
+                const registered = await Authservice.register({
                     email: this.email,
                     password: this.password
                 });
+                if (registered.status === 201) {
+                    this.$router.push({name: "login"})
+                }
             } catch (error) {
                 this.error = error.response.data.error;
+                this.loading = false
             }
         }
-    }
+    },
 };
 </script>
 <style lang="sass" scoped>

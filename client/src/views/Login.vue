@@ -1,7 +1,7 @@
 <template>
     <div>
         <v-layout>
-            <v-form v-model="valid">
+            <v-form>
                 <v-text-field v-model="email" label="email"></v-text-field>
                 <v-text-field type="password" v-model="password" label="password"></v-text-field>
             </v-form>
