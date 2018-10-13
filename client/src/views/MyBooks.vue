@@ -5,7 +5,7 @@
                 <v-toolbar class="green lighten-1 py-1" dense flat tabs>
                     <v-toolbar-title>My books</v-toolbar-title>
 					<v-spacer></v-spacer>
-					<v-btn icon>
+					<v-btn icon @click="openModal">
 						<v-icon>fiber_new</v-icon>
 					</v-btn>
 					<v-tabs
@@ -31,21 +31,31 @@
 					</v-tabs-items>
                 </v-card-text>
             </v-card>
+			<list-new-book ref="newBook"></list-new-book>
         </v-flex>
     </v-layout>
 </template>
 <script>
 import MyListedBooks from "../components/MyListedBooks.vue"
 import MyArchivedBooks from "../components/MyArchivedBooks.vue"
+import ListNewBook from "../components/ListNewBookModal.vue"
+
 export default {
 	data() {
 		return {
 			tabs: null,
+			
 		};
 	},
 	components: {
 		MyListedBooks,
-		MyArchivedBooks
+		MyArchivedBooks,
+		ListNewBook
+	},
+	methods: {
+		openModal() {
+			this.$refs.newBook.openModal()
+		}
 	}
 };
 </script>
