@@ -1,7 +1,7 @@
 <template>
     <v-container fill-height>
         <v-layout justify-center row wrap align-center>
-            <v-flex xs11 sm6 >
+            <v-flex xs11 sm6>
                 <v-card class="elevation-2">
                     <v-toolbar class="success">
                         <v-toolbar-title>Register</v-toolbar-title>
@@ -84,8 +84,7 @@ export default {
                     const pattern = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/
                     return pattern.test(value) || "Min 8 character - one upper case - one lower case - one number"
                 }
-            }
-            
+            }  
         };
     },
     computed: {
