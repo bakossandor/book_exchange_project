@@ -12,6 +12,7 @@ const corsOptions = {
     exposedHeaders: "Authorization"
 }
 app.use(cors(corsOptions))
+
 app.use(bodyParser.json())
 app.use(morgan("combined"))
 

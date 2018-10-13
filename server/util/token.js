@@ -10,12 +10,11 @@ module.exports = {
 
     async jwtVerify (req, res, next) {
         const token = req.get("Authorization")
-        await jwt.verify(token, config.jwtSecret, (err, decoded) => {
-            if (err) {
-                res.status(401).send({error: "Unauthorized"})
-            }
+        try {
+            await jwt.verify(token, config.jwtSecret)
             next()
-        });
-    }
-    
+        } catch (err) {
+            res.status(401).send({error: "Unauthorized"})
+        }
+    }    
 }
