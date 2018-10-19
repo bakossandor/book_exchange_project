@@ -4,26 +4,35 @@ const JWT = require("../util/token")
 
 module.exports = {
     async register (req, res) {
-        const pw = await Hash.hashPassword(req.body.password)
-        const user = new User({
-            email: req.body.email,
-            password: pw
-        })
         try {
+            const pw = await Hash.hashPassword(req.body.password)
+            const user = new User({
+                email: req.body.email,
+                userName: req.body.userName,
+                password: pw
+            })
             await user.save()
             res.status(201).send({
                 message: `${user.email} registered successfully`
             })
         } catch (error) {
             if (error.name === "MongoError") {
-                console.log(`error with the request | error code : -- ${error.code} -- error message : -- ${error.errmsg}`)
+                if (error.code === 11000) {
+                    if (error.errmsg.indexOf("userName") !== -1) {
+                        res.status(400).send({
+                            error: "username is already used"
+                        })
+                    } else if (error.errmsg.indexOf("email") !== -1) {
+                        res.status(400).send({
+                            error: "email is already used"
+                        })
+                    }
+                }
+            } else {
                 res.status(400).send({
-                    error: `Error: ${user.email} email adress has been already registered`
+                    error
                 })
             }
-            res.status(400).send({
-                error
-            })
         }
     },
     

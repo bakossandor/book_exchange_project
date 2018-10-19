@@ -4,10 +4,7 @@ const JWT = require("../util/token")
 const BookController = require("../controllers/bookController")
 
 module.exports = (app) => {
-
-    // need to turn on after dev
-    // app.use("/api", JWT.jwtVerify)
-    // need to turn on after dev
+    app.use("/api", JWT.jwtVerify)
 
     app.post("/register", 
         RegisterValidation.register,

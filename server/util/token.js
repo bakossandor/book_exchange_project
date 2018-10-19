@@ -10,8 +10,8 @@ module.exports = {
     },
 
     async jwtVerify(req, res, next) {
-        const token = req.get("Authorization")
         try {
+            const token = req.get("Authorization").split(" ")[1]
             await jwt.verify(token, config.jwtSecret)
             next()
         } catch (err) {

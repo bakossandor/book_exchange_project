@@ -10,12 +10,22 @@
                         <v-form v-model="valid">
                             <v-text-field 
                                 color="green lighten-1" 
-                                prepend-icon="person" 
+                                prepend-icon="email" 
                                 name="register" 
-                                label="Register" 
+                                label="Email" 
                                 type="text" 
                                 v-model="email"
                                 :rules="[rules.required, rules.email]"
+                            ></v-text-field>
+
+                            <v-text-field 
+                                color="green lighten-1" 
+                                prepend-icon="face" 
+                                name="user" 
+                                label="Username" 
+                                type="text" 
+                                v-model="userName"
+                                :rules="[rules.required]"
                             ></v-text-field>
 
                             <v-text-field
@@ -70,6 +80,7 @@ export default {
         return {
             valid: "",
             email: "",
+            userName: "",
             password: "",
             confirmPassword: "",
             error: false,
@@ -98,7 +109,8 @@ export default {
             try {
                 const registered = await Authservice.register({
                     email: this.email,
-                    password: this.password
+                    password: this.password,
+                    userName: this.userName
                 });
                 if (registered.status === 201) {
                     this.$router.push({name: "login"})

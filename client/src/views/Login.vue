@@ -28,8 +28,13 @@ export default {
                     password: this.password
                 })
                 const token = loginResponse.headers.authorization.split(" ")[1]
-                // const {email, id, exp} = (JWT_decode.decode(token.split(" ")[1]))
+                const {email, id} = JWT_decode.decode(token)
                 Localstorage.setLocalStorage(token)
+                this.$store.dispatch("login", {
+                    token,
+                    email,
+                    id,
+                })
             } catch (error) {
                 console.log("error in the login: ", error)
             }
