@@ -8,14 +8,16 @@
 						class="ml-5"
                         flat
 						dense
-                        label="Search for a book"
-                        prepend-inner-icon="search"
+                        label="Search for a book title or the author"
+                        append-icon="search"
+                        @click:append="search"
                         solo-inverted
 						hide-details
 						single-line
-                        v-model="searchValue"
+                        v-model="table.searchValue"
+                        @keyup.native.enter="search"
                     ></v-text-field>
-					<v-btn icon @click="sync">
+					<v-btn icon @click="fillTheTable">
 						<v-icon>sync</v-icon>
 					</v-btn>
                 </v-toolbar>
@@ -60,8 +62,6 @@ import Filter from "../util/filters.js"
 export default {
 	data() {
 		return {
-            searchValue: null,
-            
 			table: {
 				headers: [
 					{ text: "Title", value: "title" },
@@ -79,14 +79,15 @@ export default {
                     rowsPerPage: 25,
                     sortBy: "listedAt",
                     totalItems: 0,
-                }
+                },
+                searchValue: null,
 			}
 		};
     },
     methods: {
         fillTheTable() {
             this.loading = true
-            BookService.get(this.table.pagination)
+            BookService.get(this.table.pagination, this.table.searchValue)
                 .then((data) => {
                     this.table.items = data.data.books
                     this.table.total = data.data.total
@@ -94,7 +95,7 @@ export default {
                 .catch(error => console.log("error getting the data :", error))
                 .then(this.loading = false)
         },
-        sync() {
+        search() {
             this.fillTheTable()
         }
     },

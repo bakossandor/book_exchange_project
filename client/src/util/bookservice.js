@@ -7,8 +7,13 @@ export default {
     remove (info) {
         return Api().delete("/api/book", info)
     },
-    get (params) {
-        return Api().get("/api/book", {params: params})
+    get (params, searchValue) {
+        return Api().get("/api/book", {
+            params: {
+                query: params,
+                searchValue: searchValue
+            }
+        })
     }
     // edit (info) {
     //     return Api().post("/api/edit", info)

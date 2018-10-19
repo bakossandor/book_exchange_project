@@ -81,7 +81,7 @@ export default {
 			const book = {
 				title: this.bookData.title,
 				author: this.bookData.author,
-				otherInfo: this.bookData.otherInfo,
+				info: this.bookData.otherInfo,
 				listedBy: "Me"
 			}
 			try {

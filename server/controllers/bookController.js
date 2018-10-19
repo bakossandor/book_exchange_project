@@ -24,19 +24,28 @@ module.exports = {
     },
 
     async getBooks (req, res) {
-        console.log("req.query :", req.query)
-        const page = Number(req.query.page)
-        const limit = Number(req.query.rowsPerPage)
-        const sort = req.query.sortBy
-        const desc = req.query.descending === 'true' ? -1 : 1
+        const query = JSON.parse(req.query.query)
+        const searchValue = req.query.searchValue === undefined ? "" : req.query.searchValue
+        const page = Number(query.page)
+        const limit = Number(query.rowsPerPage)
+        const sort = query.sortBy
+        const desc = query.descending === true ? -1 : 1
         try {
-            const findBooks = await Book.paginate({}, {
-                page,
-                limit,
-                sort: {
-                    [sort]: desc
+            const findBooks = await Book.paginate(
+                {
+                    $or: [
+                        {title: {$regex: searchValue, $options: "i"}},
+                        {author: {$regex: searchValue, $options: "i"}},
+                    ]
+                },
+                {
+                    page,
+                    limit,
+                    sort: {
+                        [sort]: desc
+                    }
                 }
-            })
+            )
             res.send({
                 books: findBooks.docs,
                 total: findBooks.total
