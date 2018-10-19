@@ -14,7 +14,7 @@ module.exports = (app) => {
         RegisterController.register
     )
     app.post("/login", RegisterController.login)
-    app.get("/api/book")
+    app.get("/api/book", BookController.getBooks)
     app.post("/api/book", BookController.addBook)
     app.delete("/api/book", BookController.deleteBook)
 }

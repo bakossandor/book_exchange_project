@@ -27,7 +27,7 @@
 
 						<v-textarea
 							color="green lighten-1" 
-							v-model="otherInfo"
+							v-model="bookData.otherInfo"
 							prepend-icon="info"
 							label="Additional information"
 							counter
@@ -41,7 +41,7 @@
 					<v-btn 
 						color="green darken-1" 
 						flat 
-						@click.native="dialog=false" 
+						@click.native="ListBook" 
 						:disabled=!valid
 					>Confirm</v-btn>
 					
@@ -56,6 +56,8 @@
 	</v-layout>
 </template>
 <script>
+import BookService from "../util/bookservice.js"
+
 export default {
 	data() {
 		return {
@@ -74,6 +76,21 @@ export default {
 	methods: {
 		openModal() {
 			this.dialog = true
+		},
+		async ListBook() {
+			const book = {
+				title: this.bookData.title,
+				author: this.bookData.author,
+				otherInfo: this.bookData.otherInfo,
+				listedBy: "Me"
+			}
+			try {
+				const bookResponse = await BookService.add(book)
+				console.log("bookResponse: ", bookResponse)
+				this.dialog = false
+			} catch (error) {
+				console.log("error with posting the book: ", error)
+			}
 		}
 	}
 }

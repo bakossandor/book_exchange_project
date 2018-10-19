@@ -15,20 +15,28 @@
 						single-line
                         v-model="searchValue"
                     ></v-text-field>
+					<v-btn icon @click="sync">
+						<v-icon>sync</v-icon>
+					</v-btn>
                 </v-toolbar>
                 <v-card-text>
                     <v-data-table
                         :headers="table.headers"
                         :items="table.items"
                         item-key="_id"
+                        :loading="table.loading"
+                        :total-items="table.total"
+                        :rows-per-page-items='[25, 50, 100]'
+                        :pagination.sync="table.pagination"
                     >
+
                         <template slot="items" slot-scope="props">
                             <tr @click="props.expanded = !props.expanded">
                                 <td>{{ props.item.title }}</td>
                                 <td>{{ props.item.author }}</td>
-                                <td>{{ props.item.listBy }}</td>
+                                <td>{{ props.item.listedBy }}</td>
                                 <td>{{ props.item.location }}</td>
-                                <td>{{ props.item.listedDT }}</td>
+                                <td>{{ props.item.listedAt | formatDate}}</td>
                             </tr>
                         </template>
                         <template slot="expand" slot-scope="props">
@@ -46,41 +54,64 @@
     </v-layout>
 </template>
 <script>
+import BookService from "../util/bookservice.js"
+import Filter from "../util/filters.js"
+
 export default {
 	data() {
 		return {
-			searchValue: null,
+            searchValue: null,
+            
 			table: {
 				headers: [
 					{ text: "Title", value: "title" },
 					{ text: "Author", value: "author" },
-					{ text: "Listed by", value: "listBy" },
+					{ text: "Listed by", value: "listedBy" },
 					{ text: "Listed location", value: "location" },
-					{ text: "Listed date-time", value: "listedDT" }
+					{ text: "Listed date-time", value: "listedAt" }
 				],
-				items: [
-					{
-						title: "Book 1",
-						author: "Book 1 Author",
-						listBy: "Book 1 owner",
-						location: "Book 1 city",
-						listedDT: "Book 1 listed date-time",
-						info: "a new book",
-						_id: "0001"
-					},
-					{
-						title: "Book 2",
-						author: "Book 2 Author",
-						listBy: "Book 2 owner",
-						location: "Book 2 city",
-						listedDT: "Book 2 listed date-time",
-						info: "an old book",
-						_id: "0002"
-					}
-				]
+                items: [],
+                total: 0,
+                loading: false,
+                pagination: {
+                    descending: true,
+                    page: 1,
+                    rowsPerPage: 25,
+                    sortBy: "listedAt",
+                    totalItems: 0,
+                }
 			}
 		};
-	}
+    },
+    methods: {
+        fillTheTable() {
+            this.loading = true
+            BookService.get(this.table.pagination)
+                .then((data) => {
+                    this.table.items = data.data.books
+                    this.table.total = data.data.total
+                })
+                .catch(error => console.log("error getting the data :", error))
+                .then(this.loading = false)
+        },
+        sync() {
+            this.fillTheTable()
+        }
+    },
+    filters: {
+        formatDate: Filter.formatDate
+    },
+    mounted() {
+        this.fillTheTable()
+    },
+    watch: {
+        "table.pagination": {
+            handler() {
+                this.fillTheTable()
+            },
+            deep: true
+        }
+    },
 };
 </script>
 <style lang="sass" scoped>
