@@ -16,5 +16,6 @@ module.exports = (app) => {
     app.post("/login", RegisterController.login)
     app.get("/api/book", BookController.getBooks)
     app.post("/api/book", BookController.addBook)
-    app.delete("/api/book", BookController.deleteBook)
+    // app.delete("/api/book", BookController.deleteBook)
+    app.put("/api/book/:id", BookController.changeStatus)
 }

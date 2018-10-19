@@ -1,7 +1,8 @@
 const Book = require("../models/book")
+// const JWT = require("../util/token")
 
 module.exports = {
-    async addBook (req, res) {
+    async addBook(req, res) {
         const book = new Book({
             title: req.body.title,
             author: req.body.author,
@@ -23,7 +24,7 @@ module.exports = {
         }
     },
 
-    async getBooks (req, res) {
+    async getBooks(req, res) {
         const query = JSON.parse(req.query.query)
         const searchValue = req.query.searchValue === undefined ? "" : req.query.searchValue
         const page = Number(query.page)
@@ -58,6 +59,37 @@ module.exports = {
         }
     },
     
+    async changeStatus(req, res) {
+        try {
+            const _id = req.params.id
+            const status = req.body.status
+            await Book.findByIdAndUpdate(_id, {status: status}, {new: true})
+            res.send({
+                message: "status changed successfully"
+            })
+        } catch (error) {
+            res.status(400).send({
+                error
+            })
+        }
+    },
+
+    async getArchivedBooks(req, res) {
+        try {
+            
+        } catch (error) {
+            console.log("error with returning the archived books :", error)
+        }
+    },
+
+    async getListedBooks(req, res) {
+        try {
+            
+        } catch (error) {
+            console.log("error with returning the listed books :", error)
+        }
+    },
+
     async deleteBook (req, res) {
         try {
             const _id = req.body._id

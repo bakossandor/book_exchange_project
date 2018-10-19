@@ -86,14 +86,14 @@ export default {
     },
     methods: {
         fillTheTable() {
-            this.loading = true
+            this.table.loading = true
             BookService.get(this.table.pagination, this.table.searchValue)
                 .then((data) => {
                     this.table.items = data.data.books
                     this.table.total = data.data.total
                 })
                 .catch(error => console.log("error getting the data :", error))
-                .then(this.loading = false)
+                .then(this.table.loading = false)
         },
         search() {
             this.fillTheTable()

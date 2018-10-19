@@ -14,6 +14,9 @@ export default {
                 searchValue: searchValue
             }
         })
+    },
+    status(id, info) {
+        return Api().put(`/api/book/${id}`, info)
     }
     // edit (info) {
     //     return Api().post("/api/edit", info)
