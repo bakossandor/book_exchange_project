@@ -35,5 +35,13 @@ export default new Vuex.Store({
 				id: null
 			})
 		}
-	}
+	},
+	getters: {
+        isAuthenticated(state) {
+            return state.token !== null
+		},
+		getUserName(state) {
+			return state.userName
+		}
+    }
 })
