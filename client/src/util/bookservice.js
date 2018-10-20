@@ -4,8 +4,8 @@ export default {
     add (info) {
         return Api().post("/api/book", info)
     },
-    remove (info) {
-        return Api().delete("/api/book", info)
+    remove (id) {
+        return Api().delete(`/api/book/${id}`)
     },
     get (params, searchValue) {
         return Api().get("/api/book", {
@@ -15,6 +15,16 @@ export default {
             }
         })
     },
+
+    getUserBooks(id, params, status) {
+        return Api().get(`/api/user/${id}/book`, {
+            params: {
+                query: params,
+                status: status
+            }
+        })
+    },
+
     status(id, info) {
         return Api().put(`/api/book/${id}`, info)
     }

@@ -17,7 +17,6 @@
                     <td>{{ props.item.title }}</td>
                     <td>{{ props.item.author }}</td>
                     <td>{{ props.item.listedBy }}</td>
-                    <td>{{ props.item.location }}</td>
                     <td>{{ props.item.listedAt | formatDate}}</td>
                 </tr>
             </template>
@@ -45,7 +44,6 @@ export default {
                     { text: "Title", value: "title" },
 					{ text: "Author", value: "author" },
 					{ text: "Listed by", value: "listedBy" },
-					{ text: "Listed location", value: "location" },
 					{ text: "Listed date-time", value: "listedAt" }
                 ],
                 items: [],
@@ -65,7 +63,7 @@ export default {
     methods: {
         fillTheTable() {
             this.table.loading = true
-            BookService.get(this.table.pagination, this.table.searchValue)
+            BookService.getUserBooks(this._id, this.table.pagination, "listed")
                 .then((data) => {
                     this.table.items = data.data.books
                     this.table.total = data.data.total
@@ -73,8 +71,8 @@ export default {
                 .catch(error => console.log("error getting the data :", error))
                 .then(this.table.loading = false)
         },
+
         archive(id) {
-            console.log("id", id)
             BookService.status(id, {status: "archived"})
         },
     },
@@ -92,6 +90,11 @@ export default {
             deep: true
         }
     },
+    computed: {
+		_id() {
+			return this.$store.state.user_id
+		}
+	}
 }
 </script>
 

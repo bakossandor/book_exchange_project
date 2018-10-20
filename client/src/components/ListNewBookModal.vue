@@ -82,15 +82,27 @@ export default {
 				title: this.bookData.title,
 				author: this.bookData.author,
 				info: this.bookData.otherInfo,
-				listedBy: "Me"
+				listedBy: this.listedBy,
+				listedById: this.listedById,
 			}
 			try {
 				const bookResponse = await BookService.add(book)
 				console.log("bookResponse: ", bookResponse)
 				this.dialog = false
+				this.bookData.title = ""
+				this.bookData.author = ""
+				this.bookData.otherInfo = ""
 			} catch (error) {
 				console.log("error with posting the book: ", error)
 			}
+		},
+	},
+	computed: {
+		listedBy() {
+			return this.$store.state.userName
+		},
+		listedById() {
+			return this.$store.state.user_id
 		}
 	}
 }

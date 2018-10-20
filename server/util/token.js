@@ -19,7 +19,9 @@ module.exports = {
         }
     },
 
-    // decodeUserId(token) {
-    //     return jwt_decode(token)
-    // }
+    decodeUserId(req) {
+        const token = req.get("Authorization").split(" ")[1]
+        const {id} = jwt_decode(token)
+        return id
+    }
 }

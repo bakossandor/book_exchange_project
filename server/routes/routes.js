@@ -10,9 +10,17 @@ module.exports = (app) => {
         RegisterValidation.register,
         RegisterController.register
     )
+
     app.post("/login", RegisterController.login)
+
+    app.get("/api/user/:id/book", BookController.getUserBooks)
+
     app.get("/api/book", BookController.getBooks)
+
     app.post("/api/book", BookController.addBook)
-    // app.delete("/api/book", BookController.deleteBook)
+
+    app.delete("/api/book/:id", BookController.deleteBook)
+
     app.put("/api/book/:id", BookController.changeStatus)
+
 }

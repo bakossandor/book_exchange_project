@@ -1,5 +1,5 @@
 const Book = require("../models/book")
-// const JWT = require("../util/token")
+const JWT = require("../util/token")
 
 module.exports = {
     async addBook(req, res) {
@@ -9,7 +9,8 @@ module.exports = {
             info:  req.body.info,
             listedAt: new Date(),
             listedBy: req.body.listedBy,
-            status: req.body.status
+            listedById: req.body.listedById,
+            status: "listed"
         })
         try {
             await book.save()
@@ -74,27 +75,35 @@ module.exports = {
         }
     },
 
-    async getArchivedBooks(req, res) {
+    async getUserBooks(req, res) {
         try {
-            
+            const query = JSON.parse(req.query.query)
+            const page = Number(query.page)
+            const limit = Number(query.rowsPerPage)
+            const sort = query.sortBy
+            const desc = query.descending === true ? -1 : 1
+            const status = req.query.status
+            const listedById = JWT.decodeUserId(req)
+            console.log("status :", status, "_id :", listedById)
+            const mongoQuery = {listedById, status}
+            const findBooks = await Book.paginate(mongoQuery, {page, limit, sort: {[sort]: desc}})
+            console.log("books found :", findBooks)
+            res.send({
+                books: findBooks.docs,
+                total: findBooks.total
+            })
         } catch (error) {
-            console.log("error with returning the archived books :", error)
-        }
-    },
-
-    async getListedBooks(req, res) {
-        try {
-            
-        } catch (error) {
-            console.log("error with returning the listed books :", error)
+            console.log("error with returning the userbooks books :", error)
         }
     },
 
     async deleteBook (req, res) {
         try {
-            const _id = req.body._id
+            const _id = req.params.id
+            console.log("_id: ", _id)
             const deletedBookResponse = await Book.findOneAndDelete({_id})
-            res.status(201).send({
+            console.log("---deleted book----", deletedBookResponse)
+            res.status(202).send({
                 message: `${deletedBookResponse.title} book has been deleted from the list`
             })
 

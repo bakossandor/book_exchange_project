@@ -37,7 +37,6 @@
                                 <td>{{ props.item.title }}</td>
                                 <td>{{ props.item.author }}</td>
                                 <td>{{ props.item.listedBy }}</td>
-                                <td>{{ props.item.location }}</td>
                                 <td>{{ props.item.listedAt | formatDate}}</td>
                             </tr>
                         </template>
@@ -67,7 +66,6 @@ export default {
 					{ text: "Title", value: "title" },
 					{ text: "Author", value: "author" },
 					{ text: "Listed by", value: "listedBy" },
-					{ text: "Listed location", value: "location" },
 					{ text: "Listed date-time", value: "listedAt" }
 				],
                 items: [],

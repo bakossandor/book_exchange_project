@@ -60,7 +60,8 @@ module.exports = {
 
             const token = await JWT.jwtSignUser({
                 id: loginUser._id,
-                email: loginUser.email
+                email: loginUser.email,
+                userName: loginUser.userName
             })
 
             res.header({Authorization: `Bearer ${token}`}).send({message: "Successfully logged in"})

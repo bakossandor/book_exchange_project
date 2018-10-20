@@ -16,6 +16,10 @@ const BookSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    listedById: {
+        type: String,
+        required: true,
+    },
     status: String
 })
 
