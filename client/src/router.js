@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
-import Books from "./views/Books.vue"
 import About from "./views/About.vue"
 import Login from "./views/Login.vue"
 import Register from "./views/Register.vue"
@@ -20,11 +19,6 @@ export default new Router({
 			component: Home
 		},
 		{
-			path: '/books',
-			name: 'books',
-			component: Books
-		},
-		{
 			path: '/about',
 			name: 'about',
 			component: About
@@ -40,13 +34,16 @@ export default new Router({
 			component: Login
 		},
 		{
+			path: '/books',
+			name: 'books',
+			beforeEnter: RouteGuard.ifAuthenticated,
+			component: () => import(/* webpackChunkName: "books" */ './views/Books.vue')
+		},
+		{
 			path: '/mybooks',
 			name: 'mybooks',
 			beforeEnter: RouteGuard.ifAuthenticated,
-			// route level code-splitting
-			// this generates a separate chunk (about.[hash].js) for this route
-			// which is lazy-loaded when the route is visited.
-			component: () => import(/* webpackChunkName: "about" */ './views/MyBooks.vue')
+			component: () => import(/* webpackChunkName: "mybooks" */ './views/MyBooks.vue')
 		}
 	]
 })

@@ -10,9 +10,10 @@
                     :key="inx" 
                     :to="item.link"
                 >{{ item.title }}</v-btn>
+                <v-btn flat to="/books" v-if="auth">Books</v-btn>
                 <v-btn flat to="/mybooks" v-if="auth">My Books</v-btn>
                 <v-btn flat to="/user" v-if="auth">Profile</v-btn>
-                <v-btn flat to="/login" v-if="auth">Log out</v-btn>
+                <v-btn flat v-if="auth" @click="logout">Log out</v-btn>
                 <v-btn flat to="/register" v-if="!auth">Register</v-btn>
                 <v-btn flat to="/login" v-if="!auth">Login</v-btn>
             </v-toolbar-items>
@@ -31,6 +32,10 @@
                     <v-list-tile-content>
                         <v-list-tile-title>{{ item.title }}</v-list-tile-title>
                     </v-list-tile-content>
+                </v-list-tile>
+                <v-list-tile to="/books" v-if="auth" active-class="white--text success">
+                    <v-list-tile-action><v-icon>library_books</v-icon></v-list-tile-action>
+                    <v-list-tile-content><v-list-tile-title>Books</v-list-tile-title></v-list-tile-content>
                 </v-list-tile>
                 <v-list-tile to="/mybooks" v-if="auth" active-class="white--text success">
                     <v-list-tile-action><v-icon>book</v-icon></v-list-tile-action>
@@ -66,8 +71,7 @@ export default {
             sideNav: null,
             menu: [
                 {icon: "home", title: "home", link: "/"},
-                {icon: "info", title: "about", link: "/about"},
-                {icon: "library_books", title: "books", link: "/books"},
+                {icon: "info", title: "about", link: "/about"}
             ]
         }
     },

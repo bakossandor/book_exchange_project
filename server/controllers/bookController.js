@@ -36,8 +36,8 @@ module.exports = {
             const findBooks = await Book.paginate(
                 {
                     $or: [
-                        {title: {$regex: searchValue, $options: "i"}},
-                        {author: {$regex: searchValue, $options: "i"}},
+                        {title: {$regex: searchValue, $options: "i"}, status: {$ne: "archived"}},
+                        {author: {$regex: searchValue, $options: "i"}, status: {$ne: "archived"}},
                     ]
                 },
                 {
