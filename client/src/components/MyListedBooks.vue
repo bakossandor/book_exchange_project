@@ -13,7 +13,7 @@
             :pagination.sync="table.pagination"
         >
             <template slot="items" slot-scope="props">
-                <tr @click="props.expanded = !props.expanded">
+                <tr @click="props.expanded = !props.expanded" :class="{'amber lighten-1': (props.item.tradeStatus === 'offered')}">
                     <td>{{ props.item.title }}</td>
                     <td>{{ props.item.author }}</td>
                     <td>{{ props.item.listedBy }}</td>
@@ -21,11 +21,13 @@
                 </tr>
             </template>
             <template slot="expand" slot-scope="props">
-                <v-card flat>
+                <v-card flat :class="{'amber lighten-4': (props.item.tradeStatus === 'offered')}">
                     <v-card-text>{{ props.item.info }}</v-card-text>
                     <v-card-actions>
-                        <v-btn flat class="green lighten-1">Edit</v-btn>
-                        <v-btn flat class="green lighten-1" @click="archive(props.item._id)">Archive</v-btn>
+                        <v-btn v-if="!props.item.tradeStatus" flat class="green lighten-1">Edit</v-btn>
+                        <v-btn v-if="!props.item.tradeStatus" flat class="green lighten-1" @click="archive(props.item._id)">Archive</v-btn>
+                        <v-btn v-if="props.item.tradeStatus === 'offered'" flat class="amber lighten-1" @click="acceptRequest(props.item._id)">Accept</v-btn>
+                        <v-btn v-if="props.item.tradeStatus === 'offered'" flat class="amber lighten-1" @click="declineRequest(props.item._id)">Decline</v-btn>
                     </v-card-actions>
                 </v-card>
             </template>
@@ -57,6 +59,9 @@ export default {
                     totalItems: 0,
                 },
                 searchValue: null,
+                colors: {
+                    offered: "red"
+                }
             }
         }
     },
@@ -67,6 +72,7 @@ export default {
                 .then((data) => {
                     this.table.items = data.data.books
                     this.table.total = data.data.total
+                    console.log("this table :", this.table.items)
                 })
                 .catch(error => console.log("error getting the data :", error))
                 .then(this.table.loading = false)
@@ -75,6 +81,17 @@ export default {
         archive(id) {
             BookService.status(id, {status: "archived"})
         },
+        acceptRequest(book) {
+            // const updatedInfo = {
+            //     offered_id: book._id,
+            //     requested_id: book.id
+            // }
+            // console.log("books :", updatedInfo)
+            // // BookService.acceptRequest(updatedInfo)
+        },
+        declineRequest() {
+            // BookService.tradeRequest()
+        }
     },
     filters: {
         formatDate: Filter.formatDate
@@ -93,7 +110,13 @@ export default {
     computed: {
 		_id() {
 			return this.$store.state.user_id
-		}
+        },
+        offered() {
+            return "purple"
+        },
+        userEmail() {
+			return this.$store.state.email
+		},
 	}
 }
 </script>

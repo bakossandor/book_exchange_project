@@ -20,7 +20,12 @@ const BookSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    status: String
+    status: String,
+    tradeStatus: String,
+    traderId: String,
+    traderEmail: String,
+    traderUsername: String,
+    traderBookInfo: String
 })
 
 BookSchema.plugin(mongoosePaginate);

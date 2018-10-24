@@ -44,17 +44,19 @@
                             <v-card flat>
                                 <v-card-text>{{ props.item.info }}</v-card-text>
                                 <v-card-actions>
-                                    <v-btn flat class="green lighten-1">Request for trade</v-btn>
+                                    <v-btn flat class="green lighten-1" @click="openModal(props.item)">Request for trade</v-btn>
                                 </v-card-actions>
                             </v-card>
                         </template>
                     </v-data-table>
                 </v-card-text>
+                <trade-request-modal ref="trade"></trade-request-modal>
             </v-card>
         </v-flex>
     </v-layout>
 </template>
 <script>
+import TradeRequestModal from "../components/TradeRequestModal.vue"
 import BookService from "../util/bookservice.js"
 import Filter from "../util/filters.js"
 
@@ -95,7 +97,10 @@ export default {
         },
         search() {
             this.fillTheTable()
-        }
+        },
+        openModal(book) {
+			this.$refs.trade.openModal(book)
+		}
     },
     filters: {
         formatDate: Filter.formatDate
@@ -111,6 +116,9 @@ export default {
             deep: true
         }
     },
+    components: {
+        TradeRequestModal
+    }
 };
 </script>
 <style lang="sass" scoped>

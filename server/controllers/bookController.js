@@ -113,5 +113,47 @@ module.exports = {
                 error
             })
         }
+    },
+
+    async tradeRequest(req, res) {
+        try {
+            const updateOne = {
+                requested_id: req.body.requested_id,
+                offered_username: req.body.offered_username,
+                offered_userId: req.body.offered_userId,
+                offered_book_info: req.body.offered_book_info
+            }
+            const updateTwo = {
+                offered_id: req.body.offered_id,
+                requested_username: req.body.requested_username,
+                requested_userId: req.body.requested_userId,
+                requested_book_info: req.body.requested_book_info
+            }
+
+            const responses = await Promise.all([
+                Book.findByIdAndUpdate({_id: updateOne.requested_id}, {tradeStatus: "requested", traderId: updateOne.offered_userId, traderUsername: updateOne.offered_username}, {new: true}), 
+                Book.findByIdAndUpdate({_id: updateTwo.offered_id}, {tradeStatus: "offered", traderId: updateTwo.requested_userId, traderUsername: updateTwo.requested_username}, {new: true})
+            ])
+            console.log("trade request response: ", responses)
+            res.status(202).send({
+                message: "traded request successfully sent"
+            })
+            console.log("trade Request : -- ", updateOne)
+        } catch (error) {
+            console.log("error with the tradeRequest request --- ", error)
+            res.status(400).send({
+                error
+            })
+        }
+    },
+    async acceptRequest(req, res) {
+        try {
+            // 
+        } catch (error) {
+            console.log("error with the tradeRequest request --- ", error)
+            res.status(400).send({
+                error
+            })
+        }
     }
 }

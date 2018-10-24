@@ -27,8 +27,13 @@ export default {
 
     status(id, info) {
         return Api().put(`/api/book/${id}`, info)
+    },
+    
+    tradeRequest(info) {
+        return Api().post(`/api/book/trade`, info)
+    },
+
+    acceptRequest(info) {
+        return Api().post(`/api/book/acceptRequest`, info)
     }
-    // edit (info) {
-    //     return Api().post("/api/edit", info)
-    // },
 }
