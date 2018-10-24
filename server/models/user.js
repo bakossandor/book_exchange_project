@@ -11,7 +11,13 @@ const userSchema = new mongoose.Schema({
         unique: true,
         required: true
     },
-    password: String
+    password: String,
+    books: [
+        {type: mongoose.Schema.Types.ObjectId}
+    ],
+    offeredBooks: [
+        {type: mongoose.Schema.Types.ObjectId}
+    ]
 });
 
 module.exports = mongoose.model('User', userSchema);

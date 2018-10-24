@@ -11,7 +11,7 @@
                         <h3>The requested book</h3>
                         <p>Title: {{requestedBook.title}}</p>
                         <p>Author: {{requestedBook.author}}</p>
-                        <p>This book is listed by <strong>{{requestedBook.listedBy}}</strong></p>
+                        <p>This book is listed by <strong>{{requestedBook.listedByUserName}}</strong></p>
                     </div>
                     <div>
                         <h3>What is your offer?</h3>
@@ -91,6 +91,7 @@ export default {
 		openModal(requestedBook) {
             this.dialog = true
             this.requestedBook = requestedBook
+            
         },
         fillTheTable() {
             this.table.loading = true
@@ -102,6 +103,9 @@ export default {
                 .catch(error => console.log("error getting the data :", error))
                 .then(this.table.loading = false)
         },
+        getUser() {
+            
+        },
         selectBook(book) {
             this.selectedBooks.length = 0
             this.selectedBooks.push(book)
@@ -109,14 +113,16 @@ export default {
         tradeRequest() {
             
             const updatedInfo = {
+                //which book I offer to the trade
                 offered_id: this.selectedBooks[0]._id,
                 offered_userId: this._id,
                 offered_username: this.userName,
-                offered_book_info: `${this.selectedBooks[0].title},${this.selectedBooks[0].author}`,
+                // offered_book_info: `${this.selectedBooks[0].title},${this.selectedBooks[0].author}`,
+                // I want this book
                 requested_id: this.requestedBook._id,
-                requested_userId: this.requestedBook.listedById,
-                requested_username: this.requestedBook.listedBy,
-                requested_book_info: `${this.requestedBook.title},${this.requestedBook.author}`
+                requested_userId: this.requestedBook.listedBy,
+                requested_username: this.requestedBook.listedByUserName,
+                // requested_book_info: `${this.requestedBook.title},${this.requestedBook.author}`
             }
             console.log("books :", updatedInfo)
             BookService.tradeRequest(updatedInfo)

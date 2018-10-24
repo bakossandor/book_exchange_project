@@ -36,7 +36,6 @@
                             <tr @click="props.expanded = !props.expanded">
                                 <td>{{ props.item.title }}</td>
                                 <td>{{ props.item.author }}</td>
-                                <td>{{ props.item.listedBy }}</td>
                                 <td>{{ props.item.listedAt | formatDate}}</td>
                             </tr>
                         </template>
@@ -67,7 +66,6 @@ export default {
 				headers: [
 					{ text: "Title", value: "title" },
 					{ text: "Author", value: "author" },
-					{ text: "Listed by", value: "listedBy" },
 					{ text: "Listed date-time", value: "listedAt" }
 				],
                 items: [],

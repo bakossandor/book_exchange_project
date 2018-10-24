@@ -13,21 +13,22 @@
             :pagination.sync="table.pagination"
         >
             <template slot="items" slot-scope="props">
-                <tr @click="props.expanded = !props.expanded" :class="{'amber lighten-1': (props.item.tradeStatus === 'offered')}">
+                <tr @click="props.expanded = !props.expanded" :class="{'amber lighten-1': (props.item.tradeStatus === 'offered'),'purple lighten-4':(props.item.tradeStatus === 'requested')}">
                     <td>{{ props.item.title }}</td>
                     <td>{{ props.item.author }}</td>
-                    <td>{{ props.item.listedBy }}</td>
                     <td>{{ props.item.listedAt | formatDate}}</td>
                 </tr>
             </template>
             <template slot="expand" slot-scope="props">
-                <v-card flat :class="{'amber lighten-4': (props.item.tradeStatus === 'offered')}">
+                <v-card flat :class="{'amber lighten-4': (props.item.tradeStatus === 'offered'), 'purple lighten-5':(props.item.tradeStatus === 'requested')}">
                     <v-card-text>{{ props.item.info }}</v-card-text>
+                    <v-card-text v-if="props.item.tradeStatus === 'offered'">This book is under trade request, It was offered to trade by You</v-card-text>
                     <v-card-actions>
                         <v-btn v-if="!props.item.tradeStatus" flat class="green lighten-1">Edit</v-btn>
                         <v-btn v-if="!props.item.tradeStatus" flat class="green lighten-1" @click="archive(props.item._id)">Archive</v-btn>
-                        <v-btn v-if="props.item.tradeStatus === 'offered'" flat class="amber lighten-1" @click="acceptRequest(props.item._id)">Accept</v-btn>
-                        <v-btn v-if="props.item.tradeStatus === 'offered'" flat class="amber lighten-1" @click="declineRequest(props.item._id)">Decline</v-btn>
+                        <v-btn v-if="props.item.tradeStatus === 'offered'" flat class="amber lighten-1" @click="declineRequest(props.item)">Decline</v-btn>
+                        <!-- <v-btn v-if="props.item.tradeStatus === 'requested'" flat class="purple lighten-4" @click="declineRequest(book)">Accept</v-btn> -->
+                        <v-btn v-if="props.item.tradeStatus === 'requested'" flat class="purple lighten-4" @click="declineRequest(props.item)">Decline</v-btn>
                     </v-card-actions>
                 </v-card>
             </template>
@@ -45,7 +46,6 @@ export default {
                 headers: [
                     { text: "Title", value: "title" },
 					{ text: "Author", value: "author" },
-					{ text: "Listed by", value: "listedBy" },
 					{ text: "Listed date-time", value: "listedAt" }
                 ],
                 items: [],
@@ -89,9 +89,16 @@ export default {
             // console.log("books :", updatedInfo)
             // // BookService.acceptRequest(updatedInfo)
         },
-        declineRequest() {
-            // BookService.tradeRequest()
-        }
+        declineRequest(book) {
+            const books = {
+                offered_id: book._id,
+                offered_userId: book.listedBy,
+                requested_id: book.traderBookId,
+                requested_userId: book.traderUserId
+            }
+            console.log(books)
+            BookService.declineRequest(books)
+        },
     },
     filters: {
         formatDate: Filter.formatDate

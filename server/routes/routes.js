@@ -15,6 +15,8 @@ module.exports = (app) => {
 
     app.get("/api/user/:id/book", BookController.getUserBooks)
 
+    app.get("/api/user/:id/tradebooks", BookController.getTradeBooks)
+
     app.get("/api/book", BookController.getBooks)
 
     app.post("/api/book", BookController.addBook)
@@ -22,6 +24,8 @@ module.exports = (app) => {
     app.delete("/api/book/:id", BookController.deleteBook)
 
     app.put("/api/book/:id", BookController.changeStatus)
+
+    app.post("/api/book/cancel", BookController.declineRequest)
 
     app.post("/api/book/trade", BookController.tradeRequest)
 

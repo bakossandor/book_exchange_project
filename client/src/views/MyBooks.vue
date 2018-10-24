@@ -16,7 +16,8 @@
         				left
 					>
 						<v-tab>Available</v-tab>
-						<v-tab>Archived</v-tab>						
+						<v-tab>Archived</v-tab>
+						<v-tab>Trades</v-tab>					
 					</v-tabs>
                 </v-toolbar>
 
@@ -27,6 +28,9 @@
 						</v-tab-item>
 						<v-tab-item>
 							<my-archived-books></my-archived-books>
+						</v-tab-item>
+						<v-tab-item>
+							<my-trade-books></my-trade-books>
 						</v-tab-item>
 					</v-tabs-items>
                 </v-card-text>
@@ -39,18 +43,18 @@
 import MyListedBooks from "../components/MyListedBooks.vue"
 import MyArchivedBooks from "../components/MyArchivedBooks.vue"
 import ListNewBook from "../components/ListNewBookModal.vue"
-
+import MyTradeBooks from "../components/MyTrades.vue"
 export default {
 	data() {
 		return {
 			tabs: null,
-			
 		};
 	},
 	components: {
 		MyListedBooks,
 		MyArchivedBooks,
-		ListNewBook
+		ListNewBook,
+		MyTradeBooks
 	},
 	methods: {
 		openModal() {

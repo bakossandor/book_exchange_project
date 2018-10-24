@@ -83,7 +83,7 @@ export default {
 				author: this.bookData.author,
 				info: this.bookData.otherInfo,
 				listedBy: this.listedBy,
-				listedById: this.listedById,
+				listedByUserName: this.listedByUserName
 			}
 			try {
 				const bookResponse = await BookService.add(book)
@@ -99,10 +99,10 @@ export default {
 	},
 	computed: {
 		listedBy() {
-			return this.$store.state.userName
-		},
-		listedById() {
 			return this.$store.state.user_id
+		},
+		listedByUserName() {
+			return this.$store.state.userName
 		}
 	}
 }

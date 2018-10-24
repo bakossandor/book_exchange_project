@@ -16,6 +16,10 @@ export default {
         })
     },
 
+    getTradeBooks(id) {
+        return Api().get(`/api/user/${id}/tradebooks`)
+    },
+
     getUserBooks(id, params, status) {
         return Api().get(`/api/user/${id}/book`, {
             params: {
@@ -35,5 +39,9 @@ export default {
 
     acceptRequest(info) {
         return Api().post(`/api/book/acceptRequest`, info)
+    },
+
+    declineRequest(info) {
+        return Api().post(`/api/book/cancel`, info)
     }
 }

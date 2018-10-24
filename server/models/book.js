@@ -13,19 +13,18 @@ const BookSchema = new mongoose.Schema({
     info: String,
     listedAt: Date,
     listedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
+    },
+    listedByUserName: {
         type: String,
         required: true
     },
-    listedById: {
-        type: String,
-        required: true,
-    },
     status: String,
     tradeStatus: String,
-    traderId: String,
-    traderEmail: String,
-    traderUsername: String,
-    traderBookInfo: String
+    traderUserId: mongoose.Schema.Types.ObjectId,
+    traderUserName: String,
+    traderBookId: mongoose.Schema.Types.ObjectId, 
 })
 
 BookSchema.plugin(mongoosePaginate);
