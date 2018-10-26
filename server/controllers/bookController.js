@@ -1,4 +1,5 @@
 const Book = require("../models/book")
+const Trade = require("../models/trade")
 const User = require("../models/user")
 const JWT = require("../util/token")
 
@@ -127,26 +128,55 @@ module.exports = {
             const desc = query.descending === true ? -1 : 1
             const status = req.query.status
             const listedBy = JWT.decodeUserId(req)
-            const books = await User.find({_id: listedBy}, {books: 1})
-            if (books.length === 1) {
-                console.log("books length === 1", books[0].books)
-
+            
+            const mongoQuery = {listedBy, status: {$in: status}}
+            const {docs, total} = await Book.paginate(mongoQuery, {page, limit, sort: {[sort]: desc}, lean: true})
+    
+            
+            if (docs.length >= 1) {
                 
+                // async function findTrade (status, bookId) {
+                //     const book = await Trade.find({[status]: bookId})
+                //     return book
+                // }
 
+                // async function findTrade (arrayOfBooks) {
+                //     let promises = [];
+                //     for (let i = 0; i < arrayOfBooks.length; i++) {
+                //       promises.push(
+                //           Book.find({_id: arrayOfBooks[i].listedBy}))
+                //     }
+                //     const result = await Promise.all(promises);
+                //     return result
+                // }
+
+
+                const sacrifice = docs.filter((book) => {
+                    return book.status === "sacrifice"
+                })
+
+                if (sacrifice.length > 0) {
+                    const sacrificeBooks = await findTrade()
+                    console.log("sacrifice :", sacrificeBooks)
+                }
+
+                const thinking = docs.filter((book) => {
+                    return book.status === "thinking"
+                })
+
+                docs.forEach((book) => {
+                    book.new = "new"
+                })
+                console.log("new ", docs)
+                res.send({
+                    books: docs,
+                    total: total
+                })
             } else {
                 res.send({
-                    message: "The user has 0 listed book"
+                    message: `The user has 0 ${status} book`
                 })
             }
-            // console.log("userBooks --------- ", books)
-            const mongoQuery = {listedBy, status: {$in: status}}
-            const findBooks = await Book.paginate(mongoQuery, {page, limit, sort: {[sort]: desc}})
-            
-            console.log("USEr BOOKS ------- books found :", findBooks)
-            res.send({
-                books: findBooks.docs,
-                total: findBooks.total
-            })
         } catch (error) {
             console.log("error with returning the userbooks books :", error)
         }
@@ -171,24 +201,21 @@ module.exports = {
     },
 
     async tradeRequest(req, res) {
+        console.log("req.query :", req)
         try {
-            const updateOne = {
-                requested_id: req.body.requested_id,
-                offered_username: req.body.offered_username,
-                offered_userId: req.body.offered_userId
-            }
-            const updateTwo = {
-                offered_id: req.body.offered_id,
-                requested_username: req.body.requested_username,
-                requested_userId: req.body.requested_userId,
-            }
-
+            trade = new Trade({
+                initiater: req.body.initiater,
+                receiver: req.body.receiver,
+                initiaterBook: req.body.initiaterBook,
+                receiverBook: req.body.receiverBook,
+                status: "requested"
+            })
             const responses = await Promise.all([
-                Book.findByIdAndUpdate(updateOne.requested_id, {tradeStatus: "requested", traderUserId: updateOne.offered_userId, traderUserName: updateOne.offered_username, traderBookId: updateTwo.offered_id}, {new: true}),
-                Book.findByIdAndUpdate(updateTwo.offered_id, {tradeStatus: "offered", traderUserId: updateTwo.requested_userId, traderUserName: updateTwo.requested_username, traderBookId: updateOne.requested_id}, {new: true}),
-                User.findByIdAndUpdate(updateOne.offered_userId, {$push: {offeredBooks: updateOne.requested_id}}, {new: true})
+                Book.findByIdAndUpdate(req.body.initiaterBook, {status: "sacrifice"}, {new: true}),
+                Book.findByIdAndUpdate(req.body.receiverBook, {status: "thinking"}, {new: true}),
+                trade.save()
             ])
-            // console.log("trade request response: ", responses)
+            console.log("trade request response: ", responses)
             res.status(202).send({
                 message: "traded request successfully sent"
             })

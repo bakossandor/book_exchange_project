@@ -114,15 +114,11 @@ export default {
             
             const updatedInfo = {
                 //which book I offer to the trade
-                offered_id: this.selectedBooks[0]._id,
-                offered_userId: this._id,
-                offered_username: this.userName,
-                // offered_book_info: `${this.selectedBooks[0].title},${this.selectedBooks[0].author}`,
+                initiaterBook: this.selectedBooks[0]._id,
+                initiater: this._id,
                 // I want this book
-                requested_id: this.requestedBook._id,
-                requested_userId: this.requestedBook.listedBy,
-                requested_username: this.requestedBook.listedByUserName,
-                // requested_book_info: `${this.requestedBook.title},${this.requestedBook.author}`
+                receiverBook: this.requestedBook._id,
+                receiver: this.requestedBook.listedBy,
             }
             console.log("books :", updatedInfo)
             BookService.tradeRequest(updatedInfo)
