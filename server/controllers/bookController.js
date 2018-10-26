@@ -2,6 +2,7 @@ const Book = require("../models/book")
 const Trade = require("../models/trade")
 const User = require("../models/user")
 const JWT = require("../util/token")
+const ObjectId = require("mongoose").Types.ObjectId
 
 module.exports = {
     async addBook(req, res) {
@@ -133,41 +134,60 @@ module.exports = {
             const {docs, total} = await Book.paginate(mongoQuery, {page, limit, sort: {[sort]: desc}, lean: true})
     
             
-            if (docs.length >= 1) {
+            if (docs.length > 0) {
                 
-                // async function findTrade (status, bookId) {
-                //     const book = await Trade.find({[status]: bookId})
-                //     return book
-                // }
+                async function findBooks (status, book) {
+                    const tradeParam = status === "sacrifice" ? "initiaterBook": "receiverBook"
+                    const counterParam = status === "sacrifice" ? "receiverBook": "initiaterBook"
+                    // console.log("findbooks status :", status, "findbooks book id: ", bookId)
+                    // console.log("obj id ", ObjectId(bookId))
+                    const [trade] = await Trade.find({[tradeParam]: ObjectId(book._id)})
+                    // console.log("trade obj ", trade)
+                    const bookFindParam = trade[counterParam]
+                    const [counterbook] = await Book.find({_id: bookFindParam})
+                    book["counterbook"] = counterbook
+                    console.log("newBook", book)
+                    return book
+                }
 
-                // async function findTrade (arrayOfBooks) {
-                //     let promises = [];
-                //     for (let i = 0; i < arrayOfBooks.length; i++) {
-                //       promises.push(
-                //           Book.find({_id: arrayOfBooks[i].listedBy}))
-                //     }
-                //     const result = await Promise.all(promises);
-                //     return result
-                // }
-
+                async function findTrade (status, arrayOfBooks) {
+                    let promises = [];
+                    for (let i = 0; i < arrayOfBooks.length; i++) {
+                        // console.log("findtrade arrayOfBooks :", arrayOfBooks, "status: ", status)
+                        promises.push(findBooks(status, arrayOfBooks[i]))
+                    }
+                    const result = await Promise.all(promises);
+                    return result
+                }
 
                 const sacrifice = docs.filter((book) => {
                     return book.status === "sacrifice"
                 })
 
-                if (sacrifice.length > 0) {
-                    const sacrificeBooks = await findTrade()
-                    console.log("sacrifice :", sacrificeBooks)
-                }
-
                 const thinking = docs.filter((book) => {
                     return book.status === "thinking"
                 })
 
-                docs.forEach((book) => {
-                    book.new = "new"
+                const listed = docs.filter((book) => {
+                    return book.status === "listed"
                 })
-                console.log("new ", docs)
+
+                if (sacrifice.length > 0) {
+                    const sacrificeBooks = await findTrade("sacrifice", sacrifice)
+                    console.log("sacrifice :", sacrificeBooks)
+                } 
+                
+                if (thinking.length > 0 ) {
+                    const thinkingBooks = await findTrade("thinking", thinking)
+                    console.log("thinking :", thinkingBooks)
+                }
+
+                if (listed.length > 0) {
+                    
+                }
+
+               
+
                 res.send({
                     books: docs,
                     total: total

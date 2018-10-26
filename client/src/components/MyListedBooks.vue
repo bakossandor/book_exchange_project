@@ -16,8 +16,8 @@
                 <tr 
                     @click="props.expanded = !props.expanded" 
                     :class="{
-                        'amber lighten-1': (props.item.tradeStatus === 'offered'),
-                        'purple lighten-4':(props.item.tradeStatus === 'requested')
+                        'amber lighten-1': (props.item.status === 'sacrifice'),
+                        'purple lighten-4':(props.item.status === 'thinking')
                     }">
                     <td>{{ props.item.title }}</td>
                     <td>{{ props.item.author }}</td>
@@ -28,17 +28,17 @@
                 <v-card 
                     flat 
                     :class="{
-                        'amber lighten-4': (props.item.tradeStatus === 'offered'), 
-                        'purple lighten-5':(props.item.tradeStatus === 'requested')
+                        'amber lighten-4': (props.item.status === 'sacrifice'), 
+                        'purple lighten-5':(props.item.status === 'thinking')
                     }">
                     <v-card-text>{{ props.item.info }}</v-card-text>
-                    <v-card-text v-if="props.item.tradeStatus === 'offered'">This book is under trade request, It was offered to trade by You</v-card-text>
+                    <v-card-text v-if="props.item.status === 'sacrifice'">This book is under trade request, It was offered to trade by You</v-card-text>
                     <v-card-actions>
-                        <v-btn v-if="!props.item.tradeStatus" flat class="green lighten-1">Edit</v-btn>
-                        <v-btn v-if="!props.item.tradeStatus" flat class="green lighten-1" @click="archive(props.item._id)">Archive</v-btn>
-                        <v-btn v-if="props.item.tradeStatus === 'offered'" flat class="amber lighten-1" @click="declineRequest(props.item)">Decline</v-btn>
-                        <v-btn v-if="props.item.tradeStatus === 'requested'" flat class="purple lighten-4" @click="acceptRequest(props.item)">Accept</v-btn>
-                        <v-btn v-if="props.item.tradeStatus === 'requested'" flat class="purple lighten-4" @click="declineRequest(props.item)">Decline</v-btn>
+                        <v-btn v-if="!props.item.status" flat class="green lighten-1">Edit</v-btn>
+                        <v-btn v-if="!props.item.status" flat class="green lighten-1" @click="archive(props.item._id)">Archive</v-btn>
+                        <v-btn v-if="props.item.status === 'sacrifice'" flat class="amber lighten-1" @click="declineRequest(props.item)">Withdraw</v-btn>
+                        <v-btn v-if="props.item.status === 'thinking'" flat class="purple lighten-4" @click="acceptRequest(props.item)">Accept</v-btn>
+                        <v-btn v-if="props.item.status === 'thinking'" flat class="purple lighten-4" @click="declineRequest(props.item)">Decline</v-btn>
                     </v-card-actions>
                 </v-card>
             </template>
