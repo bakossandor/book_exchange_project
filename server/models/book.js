@@ -21,11 +21,9 @@ const BookSchema = new mongoose.Schema({
         required: true
     },
     status: String,
-    tradeStatus: String,
-    traderUserId: mongoose.Schema.Types.ObjectId,
-    traderUserName: String,
-    traderEmail: String,
-    traderBookId: mongoose.Schema.Types.ObjectId, 
+    tradeInfo: {
+        type: mongoose.Schema.Types.ObjectId,
+    }
 })
 
 BookSchema.plugin(mongoosePaginate);

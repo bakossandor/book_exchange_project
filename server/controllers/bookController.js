@@ -39,8 +39,8 @@ module.exports = {
             const findBooks = await Book.paginate(
                 {
                     $or: [
-                        {title: {$regex: searchValue, $options: "i"}, status: {$ne: "archived"}, tradeStatus: {$exists: false}},
-                        {author: {$regex: searchValue, $options: "i"}, status: {$ne: "archived"}, tradeStatus: {$exists: false}},
+                        {title: {$regex: searchValue, $options: "i"}, status: "listed", tradeStatus: {$exists: false}},
+                        {author: {$regex: searchValue, $options: "i"}, status: "listed", tradeStatus: {$exists: false}},
                     ]
                 },
                 {
@@ -127,11 +127,22 @@ module.exports = {
             const desc = query.descending === true ? -1 : 1
             const status = req.query.status
             const listedBy = JWT.decodeUserId(req)
-            // console.log("status :", status, "---", "_id :", listedBy)
-            const mongoQuery = {listedBy, status}
+            const books = await User.find({_id: listedBy}, {books: 1})
+            if (books.length === 1) {
+                console.log("books length === 1", books[0].books)
+
+                
+
+            } else {
+                res.send({
+                    message: "The user has 0 listed book"
+                })
+            }
+            // console.log("userBooks --------- ", books)
+            const mongoQuery = {listedBy, status: {$in: status}}
             const findBooks = await Book.paginate(mongoQuery, {page, limit, sort: {[sort]: desc}})
             
-            // console.log("books found :", findBooks)
+            console.log("USEr BOOKS ------- books found :", findBooks)
             res.send({
                 books: findBooks.docs,
                 total: findBooks.total

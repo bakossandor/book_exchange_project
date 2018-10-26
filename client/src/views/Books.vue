@@ -33,17 +33,29 @@
                     >
 
                         <template slot="items" slot-scope="props">
-                            <tr @click="props.expanded = !props.expanded">
+                            <tr 
+                                @click="props.expanded = !props.expanded"
+                                :class="{'amber lighten-3': (props.item.listedBy === listedBy)}"
+                            >
                                 <td>{{ props.item.title }}</td>
                                 <td>{{ props.item.author }}</td>
+                                <td>{{ props.item.listedByUserName }}</td>
                                 <td>{{ props.item.listedAt | formatDate}}</td>
                             </tr>
                         </template>
                         <template slot="expand" slot-scope="props">
-                            <v-card flat>
+                            <v-card
+                                flat
+                                :class="{'amber lighten-4': (props.item.listedBy === listedBy)}"
+                            >
                                 <v-card-text>{{ props.item.info }}</v-card-text>
                                 <v-card-actions>
-                                    <v-btn flat class="green lighten-1" @click="openModal(props.item)">Request for trade</v-btn>
+                                    <v-btn 
+                                        flat 
+                                        class="green lighten-1" 
+                                        @click="openModal(props.item)"
+                                        v-if="props.item.listedBy!==listedBy"
+                                    >Request for trade</v-btn>
                                 </v-card-actions>
                             </v-card>
                         </template>
@@ -65,8 +77,9 @@ export default {
 			table: {
 				headers: [
 					{ text: "Title", value: "title" },
-					{ text: "Author", value: "author" },
-					{ text: "Listed date-time", value: "listedAt" }
+                    { text: "Author", value: "author" },
+                    { text: "Listed by", value: "listedByUserName"},
+					{ text: "Listed date-time", value: "listedAt"}
 				],
                 items: [],
                 total: 0,
@@ -116,7 +129,12 @@ export default {
     },
     components: {
         TradeRequestModal
-    }
+    },
+    computed: {
+		listedBy() {
+			return this.$store.state.user_id
+		}
+	}
 };
 </script>
 <style lang="sass" scoped>

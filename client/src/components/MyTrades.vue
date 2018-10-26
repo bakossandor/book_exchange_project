@@ -60,19 +60,19 @@ export default {
         }
     },
     methods: {
-        fillTheTable() {
-            this.table.loading = true
-            BookService.getTradeBooks(this._id)
-                .then((data) => {
-                    this.table.items = data.data.books
-                    this.counterBooks = data.data.counterBook
-                    console.log("this tradeBooks :", this.table.items)
-                    console.log("counterBooks :", data.data.counterBook)
-                    console.log("this tradeBooks :", data)
-                })
-                .catch(error => console.log("error getting the data :", error))
-                .then(this.table.loading = false)
-        },
+        // fillTheTable() {
+        //     this.table.loading = true
+        //     BookService.getTradeBooks(this._id)
+        //         .then((data) => {
+        //             this.table.items = data.data.books
+        //             this.counterBooks = data.data.counterBook
+        //             console.log("this tradeBooks :", this.table.items)
+        //             console.log("counterBooks :", data.data.counterBook)
+        //             console.log("this tradeBooks :", data)
+        //         })
+        //         .catch(error => console.log("error getting the data :", error))
+        //         .then(this.table.loading = false)
+        // },
         declineRequest(book) {
             const books = {
                 offered_id: book._id,
@@ -93,9 +93,9 @@ export default {
     filters: {
         formatDate: Filter.formatDate
     },
-    mounted() {
-        this.fillTheTable()
-    },
+    // mounted() {
+    //     this.fillTheTable()
+    // },
     computed: {
 		_id() {
 			return this.$store.state.user_id

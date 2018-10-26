@@ -12,15 +12,7 @@ const userSchema = new mongoose.Schema({
         required: true
     },
     password: String,
-    books: [
-        {type: mongoose.Schema.Types.ObjectId}
-    ],
-    offeredBooks: [
-        {type: mongoose.Schema.Types.ObjectId}
-    ],
-    pendingBooks: [
-        {type: mongoose.Schema.Types.ObjectId}
-    ]
+    books: [{type: mongoose.Schema.Types.ObjectId}],
 });
 
 module.exports = mongoose.model('User', userSchema);

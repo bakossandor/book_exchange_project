@@ -16,7 +16,6 @@
                 <tr @click="props.expanded = !props.expanded">
                     <td>{{ props.item.title }}</td>
                     <td>{{ props.item.author }}</td>
-                    <td>{{ props.item.listedBy }}</td>
                     <td>{{ props.item.listedAt | formatDate}}</td>
                 </tr>
             </template>
@@ -44,7 +43,6 @@ export default {
                 headers: [
                     { text: "Title", value: "title" },
                     { text: "Author", value: "author" },
-                    { text: "Listed by", value: "listBy" },
                     { text: "Listed date-time", value: "listedDT" }
                 ],
                 items: [],
@@ -63,7 +61,7 @@ export default {
     methods: {
         fillTheTable() {
             this.table.loading = true
-            BookService.getUserBooks(this._id, this.table.pagination, "archived")
+            BookService.getUserBooks(this._id, this.table.pagination, ["archived"])
                 .then((data) => {
                     this.table.items = data.data.books
                     this.table.total = data.data.total

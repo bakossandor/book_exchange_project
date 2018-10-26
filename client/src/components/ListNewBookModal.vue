@@ -78,16 +78,16 @@ export default {
 			this.dialog = true
 		},
 		async ListBook() {
-			const book = {
-				title: this.bookData.title,
-				author: this.bookData.author,
-				info: this.bookData.otherInfo,
-				listedBy: this.listedBy,
-				listedByUserName: this.listedByUserName
-			}
 			try {
+				const book = {
+					title: this.bookData.title,
+					author: this.bookData.author,
+					info: this.bookData.otherInfo,
+					listedBy: this.listedBy,
+					listedByUserName: this.listedByUserName
+				}
 				const bookResponse = await BookService.add(book)
-				console.log("bookResponse: ", bookResponse)
+				console.log("I created a new book: ---  ", bookResponse)
 				this.dialog = false
 				this.bookData.title = ""
 				this.bookData.author = ""

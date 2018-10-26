@@ -78,11 +78,10 @@ export default {
     methods: {
         fillTheTable() {
             this.table.loading = true
-            BookService.getUserBooks(this._id, this.table.pagination, "listed")
+            BookService.getUserBooks(this._id, this.table.pagination, ["listed", "sacrifice", "thinking"])
                 .then((data) => {
                     this.table.items = data.data.books
                     this.table.total = data.data.total
-                    console.log("this table :", this.table.items)
                 })
                 .catch(error => console.log("error getting the data :", error))
                 .then(this.table.loading = false)
