@@ -38,7 +38,7 @@ export default {
     },
 
     acceptRequest(info) {
-        return Api().post(`/api/book/acceptRequest`, info)
+        return Api().post(`/api/book/accept`, info)
     },
 
     declineRequest(info) {

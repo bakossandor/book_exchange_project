@@ -67,8 +67,17 @@ module.exports = {
         try {
             // console.log("get trade books --- ", req.params)
             const offeredBooksArray = await User.find({_id: req.params.id}, "offeredBooks")
+            const pendingBooks = await User.find({_id: req.params.id}, "pendingBooks")
+            //==== build in
+            console.log("pendingBooks books : -----", pendingBooks)
+            booksCollection = pendingBooks[0].pendingBooks.concat(offeredBooksArray[0].offeredBooks)
+            console.log("booksCollection ---------- :", booksCollection)
+            console.log("to replace :", offeredBooksArray[0].offeredBooks)
+
+            //===== build in
+
             // console.log("trade --- offerred books :", offeredBooksArray[0].offeredBooks)
-            const booksToReturn = await Book.find({_id: {$in: offeredBooksArray[0].offeredBooks}})
+            const booksToReturn = await Book.find({_id: {$in: booksCollection}})
             async function findCounter (items) {
                 let promises = [];
                 for (let i = 0; i < items.length; i++) {
@@ -78,12 +87,13 @@ module.exports = {
                 return result
             }
             const findCounterBook = await findCounter(booksToReturn)
+            const counterBook = findCounterBook.reduce((acc, val) => acc.concat(val))
             // console.log ("findc ---- : ", findCounterBook)
 
             res.send({
                 message: "books in the trade block",
                 books: booksToReturn,
-                counterBook: findCounterBook[0]
+                counterBook: counterBook
             })
         } catch (error) {
             console.log("error finding the books", error)
@@ -180,7 +190,15 @@ module.exports = {
     },
     async acceptRequest(req, res) {
         try {
-            // 
+            console.log("decline request --- :", req.body)
+            const responses = await Promise.all([
+                //the own book and user update
+                Book.findByIdAndUpdate(req.body.offered_id, {tradeStatus: "pending", status: "pending"}),
+                User.findByIdAndUpdate(req.body.offered_userId, {$push: {pendingBooks: req.body.offered_id}}),
+                //the trader update
+                Book.findByIdAndUpdate(req.body.requested_id, {status: "pending", tradeStatus: "pending"}),
+                User.findByIdAndUpdate(req.body.requested_userId, {$push: {pendingBooks: req.body.requested_id}, $pull: {offeredBooks: req.body.requested_id}})
+            ])
         } catch (error) {
             console.log("error with the tradeRequest request --- ", error)
             res.status(400).send({

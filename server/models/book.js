@@ -24,6 +24,7 @@ const BookSchema = new mongoose.Schema({
     tradeStatus: String,
     traderUserId: mongoose.Schema.Types.ObjectId,
     traderUserName: String,
+    traderEmail: String,
     traderBookId: mongoose.Schema.Types.ObjectId, 
 })
 

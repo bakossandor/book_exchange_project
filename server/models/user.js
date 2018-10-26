@@ -17,6 +17,9 @@ const userSchema = new mongoose.Schema({
     ],
     offeredBooks: [
         {type: mongoose.Schema.Types.ObjectId}
+    ],
+    pendingBooks: [
+        {type: mongoose.Schema.Types.ObjectId}
     ]
 });
 

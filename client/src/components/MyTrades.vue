@@ -13,7 +13,10 @@
                 hide-actions
             >
                 <template slot="items" slot-scope="props">
-                    <tr @click="props.expanded = !props.expanded" :class="{'amber lighten-1': (props.item.tradeStatus === 'offered')}">
+                    <tr 
+                        @click="props.expanded = !props.expanded" 
+                        :class="{'amber lighten-1': (props.item.tradeStatus === 'offered')}"
+                    >
                         <td>{{ props.item.title }}</td>
                         <td>{{ props.item.author }}</td>
                         <td>{{ props.item.listedByUserName }}</td>

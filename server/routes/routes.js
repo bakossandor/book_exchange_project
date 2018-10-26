@@ -27,6 +27,8 @@ module.exports = (app) => {
 
     app.post("/api/book/cancel", BookController.declineRequest)
 
+    app.post("/api/book/accept", BookController.acceptRequest)
+
     app.post("/api/book/trade", BookController.tradeRequest)
 
 }
