@@ -34,8 +34,8 @@
                     <v-card-text>{{ props.item.info }}</v-card-text>
                     <v-card-text v-if="props.item.status === 'sacrifice'">This book is under trade request, It was offered to trade by You</v-card-text>
                     <v-card-actions>
-                        <v-btn v-if="!props.item.status" flat class="green lighten-1">Edit</v-btn>
-                        <v-btn v-if="!props.item.status" flat class="green lighten-1" @click="archive(props.item._id)">Archive</v-btn>
+                        <v-btn v-if="props.item.status === 'listed'" flat class="green lighten-1">Edit</v-btn>
+                        <v-btn v-if="props.item.status === 'listed'" flat class="green lighten-1" @click="archive(props.item._id)">Archive</v-btn>
                         <v-btn v-if="props.item.status === 'sacrifice'" flat class="amber lighten-1" @click="declineRequest(props.item)">Withdraw</v-btn>
                         <v-btn v-if="props.item.status === 'thinking'" flat class="purple lighten-4" @click="acceptRequest(props.item)">Accept</v-btn>
                         <v-btn v-if="props.item.status === 'thinking'" flat class="purple lighten-4" @click="declineRequest(props.item)">Decline</v-btn>
@@ -68,10 +68,6 @@ export default {
                     sortBy: "listedAt",
                     totalItems: 0,
                 },
-                searchValue: null,
-                colors: {
-                    offered: "red"
-                }
             }
         }
     },
@@ -82,6 +78,7 @@ export default {
                 .then((data) => {
                     this.table.items = data.data.books
                     this.table.total = data.data.total
+                    console.log("my table books: ", this.table.items)
                 })
                 .catch(error => console.log("error getting the data :", error))
                 .then(this.table.loading = false)
@@ -91,25 +88,18 @@ export default {
             BookService.status(id, {status: "archived"})
         },
         acceptRequest(book) {
-            const books = {
-                offered_id: book._id,
-                offered_userId: book.listedBy,
-                requested_id: book.traderBookId,
-                requested_userId: book.traderUserId
+            console.log("accept request :", book)
+            const body = {
+                receiverBook: book._id,
+                initiaterBook: book.counterbook._id,
+                tradeInfo: book.tradeInfo
             }
-            console.log(books)
-            BookService.acceptRequest(books)
+            console.log("accept body: ", body)
+            BookService.acceptRequest(body)
         },
         declineRequest(book) {
-            const books = {
-                offered_id: book._id,
-                offered_userId: book.listedBy,
-                requested_id: book.traderBookId,
-                requested_userId: book.traderUserId
-            }
-            console.log(books)
-            BookService.declineRequest(books)
-        },
+            console.log("decline request :", book)
+        }
     },
     filters: {
         formatDate: Filter.formatDate

@@ -41,6 +41,10 @@ export default {
         return Api().post(`/api/book/accept`, info)
     },
 
+    approveRequest(info) {
+        return Api().post(`/api/book/approve`, info)
+    },
+
     declineRequest(info) {
         return Api().post(`/api/book/cancel`, info)
     }

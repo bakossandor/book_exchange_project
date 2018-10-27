@@ -10,29 +10,39 @@
                 :items="table.items"
                 item-key="_id"
                 :loading="table.loading"
-                hide-actions
+                :total-items="table.total"
+                :rows-per-page-items='[25, 50, 100]'
+                :pagination.sync="table.pagination"
             >
                 <template slot="items" slot-scope="props">
                     <tr 
                         @click="props.expanded = !props.expanded" 
-                        :class="{'amber lighten-1': (props.item.tradeStatus === 'offered')}"
+                        :class="{
+                            'amber lighten-1': (props.item.status === 'pending'),
+                            'amber lighten-2': (props.item.status === 'approved')
+                        }"
                     >
                         <td>{{ props.item.title }}</td>
                         <td>{{ props.item.author }}</td>
-                        <td>{{ props.item.listedByUserName }}</td>
                         <td>{{ props.item.listedAt | formatDate}}</td>
                     </tr>
                 </template>
                 <template slot="expand" slot-scope="props">
-                    <v-card flat :class="{'amber lighten-4': (props.item.tradeStatus === 'offered')}">
+                    <v-card flat 
+                        :class="{
+                            'amber lighten-3': (props.item.status === 'pending'),
+                            'amber lighten-4': (props.item.status === 'approved')
+
+                        }"
+                    >
                         <v-card-text>{{ props.item.info }}</v-card-text>
                         <hr>
                         <v-card-text>
                             <h3>Your offer is</h3>
-                            <p><strong>Title:</strong> {{getTitle(props.item.traderBookId)}}, || <strong>Author:</strong> {{getAuthor(props.item.traderBookId)}}</p>
                         </v-card-text>
                         <v-card-actions>
-                            <v-btn flat @click="declineRequest(props.item)">Decline</v-btn>
+                            <v-btn flat v-if="props.item.status === 'pending'" @click="approveRequest(props.item)">Approve</v-btn>
+                            <v-btn flat @click="reportProblem(props.item)">Report problem</v-btn>
                         </v-card-actions>
                     </v-card>
                 </template>
@@ -50,52 +60,52 @@ export default {
                 headers: [
                     { text: "Title", value: "title" },
                     { text: "Author", value: "author" },
-                    { text: "Listed by", value: "listedByUserName" },
 					{ text: "Listed date-time", value: "listedAt" }
                 ],
                 items: [],
                 loading: false,
+                pagination: {
+                    descending: true,
+                    page: 1,
+                    rowsPerPage: 25,
+                    sortBy: "listedAt",
+                    totalItems: 0,
+                },
             },
             counterBooks: []
         }
     },
     methods: {
-        // fillTheTable() {
-        //     this.table.loading = true
-        //     BookService.getTradeBooks(this._id)
-        //         .then((data) => {
-        //             this.table.items = data.data.books
-        //             this.counterBooks = data.data.counterBook
-        //             console.log("this tradeBooks :", this.table.items)
-        //             console.log("counterBooks :", data.data.counterBook)
-        //             console.log("this tradeBooks :", data)
-        //         })
-        //         .catch(error => console.log("error getting the data :", error))
-        //         .then(this.table.loading = false)
-        // },
-        declineRequest(book) {
-            const books = {
-                offered_id: book._id,
-                offered_userId: book.listedBy,
-                requested_id: book.traderBookId,
-                requested_userId: book.traderUserId
+        fillTheTable() {
+            this.table.loading = true
+            BookService.getUserBooks(this._id, this.table.pagination, ["pending", "approved"])
+                .then((data) => {
+                    this.table.items = data.data.books
+                    this.table.total = data.data.total
+                })
+                .catch(error => console.log("error getting the data :", error))
+                .then(this.table.loading = false)
+        },
+        approveRequest(book) {
+            const body = {
+                approvedBookId: book._id,
+                tradeInfo: book.tradeInfo
             }
-            console.log(books)
-            BookService.declineRequest(books)
+            console.log("body :", body)
+            BookService.approveRequest(body)
+            console.log("approved request :", body)
         },
-        getAuthor(id) {
-            return this.counterBooks.filter(book => book._id === id)[0].author
-        },
-        getTitle(id) {
-            return this.counterBooks.filter(book => book._id === id)[0].title
+        reportProblem(book) {
+            console.log("report a problem :", book)
         }
+        
     },
     filters: {
         formatDate: Filter.formatDate
     },
-    // mounted() {
-    //     this.fillTheTable()
-    // },
+    mounted() {
+        this.fillTheTable()
+    },
     computed: {
 		_id() {
 			return this.$store.state.user_id
