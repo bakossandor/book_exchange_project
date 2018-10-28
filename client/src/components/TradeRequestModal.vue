@@ -45,7 +45,8 @@
 					<v-btn 
 						color="green darken-1" 
 						flat 
-						@click.native="tradeRequest" 
+						@click.native="tradeRequest"
+                        :disabled="selectedBooks.length === 0"
 					>Trade</v-btn>
 					
 					<v-btn 
@@ -103,9 +104,6 @@ export default {
                 .catch(error => console.log("error getting the data :", error))
                 .then(this.table.loading = false)
         },
-        getUser() {
-            
-        },
         selectBook(book) {
             this.selectedBooks.length = 0
             this.selectedBooks.push(book)
@@ -122,6 +120,10 @@ export default {
             }
             console.log("books :", updatedInfo)
             BookService.tradeRequest(updatedInfo)
+                .then(() => {
+                    this.$root.$emit("booksReload")
+                    this.dialog = false
+                })
         }
 	},
     mounted() {
@@ -142,6 +144,6 @@ export default {
         userName() {
 			return this.$store.state.userName
 		},
-	}
+    },
 }
 </script>

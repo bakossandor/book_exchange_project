@@ -16,10 +16,6 @@ export default {
         })
     },
 
-    getTradeBooks(id) {
-        return Api().get(`/api/user/${id}/tradebooks`)
-    },
-
     getUserBooks(id, params, status) {
         return Api().get(`/api/user/${id}/book`, {
             params: {

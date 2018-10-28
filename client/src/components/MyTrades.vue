@@ -91,9 +91,11 @@ export default {
                 approvedBookId: book._id,
                 tradeInfo: book.tradeInfo
             }
-            console.log("body :", body)
             BookService.approveRequest(body)
-            console.log("approved request :", body)
+                .then(() => {
+                    this.fillTheTable()
+                    this.$root.$emit("realoadArchive")
+                })
         },
         reportProblem(book) {
             console.log("report a problem :", book)
@@ -113,7 +115,15 @@ export default {
         userEmail() {
 			return this.$store.state.email
 		},
-	}
+    },
+    created() {
+        this.$root.$on("reloadTrade", () => {
+            this.fillTheTable()
+        })
+    },
+    destroyed() {
+        this.$root.$off("reloadTrade")
+    }
 }
 </script>
 

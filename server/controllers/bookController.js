@@ -64,46 +64,6 @@ module.exports = {
             })
         }
     },
-
-    async getTradeBooks(req, res) {
-        try {
-            // console.log("get trade books --- ", req.params)
-            const offeredBooksArray = await User.find({_id: req.params.id}, "offeredBooks")
-            const pendingBooks = await User.find({_id: req.params.id}, "pendingBooks")
-            //==== build in
-            console.log("pendingBooks books : -----", pendingBooks)
-            booksCollection = pendingBooks[0].pendingBooks.concat(offeredBooksArray[0].offeredBooks)
-            console.log("booksCollection ---------- :", booksCollection)
-            console.log("to replace :", offeredBooksArray[0].offeredBooks)
-
-            //===== build in
-
-            // console.log("trade --- offerred books :", offeredBooksArray[0].offeredBooks)
-            const booksToReturn = await Book.find({_id: {$in: booksCollection}})
-            async function findCounter (items) {
-                let promises = [];
-                for (let i = 0; i < items.length; i++) {
-                  promises.push(Book.find((items[i].traderBookId)));
-                }
-                const result = await Promise.all(promises);
-                return result
-            }
-            const findCounterBook = await findCounter(booksToReturn)
-            const counterBook = findCounterBook.reduce((acc, val) => acc.concat(val))
-            // console.log ("findc ---- : ", findCounterBook)
-
-            res.send({
-                message: "books in the trade block",
-                books: booksToReturn,
-                counterBook: counterBook
-            })
-        } catch (error) {
-            console.log("error finding the books", error)
-            res.status(400).send({
-                error
-            })
-        }
-    },
     
     async changeStatus(req, res) {
         try {
@@ -252,7 +212,6 @@ module.exports = {
     },
 
     async tradeRequest(req, res) {
-        console.log("req.query :", req)
         try {
             trade = new Trade({
                 initiater: req.body.initiater,
@@ -287,6 +246,9 @@ module.exports = {
                 //update the initiater book object
                 Book.findByIdAndUpdate(initiaterBook, {status: "pending"}, {new: true}),
             ])
+            res.status(202).send({
+                message: "successfully accepted request"
+            })
             console.log("accept request finished : ", responses)
         } catch (error) {
             console.log("error with accepting the request --- ", error)
@@ -299,11 +261,8 @@ module.exports = {
     async approveRequest(req, res) {
         try {
             const {approvedBookId, tradeInfo} = req.body
-            
-
-
             const [tradeObj] = await Trade.find({_id: tradeInfo})
-            console.log("approve trade obj ..... ", tradeObj)
+            // console.log("approve trade obj ..... ", tradeObj)
 
             if (tradeObj.status === "pending") {
             //if there is no approve at all
@@ -393,7 +352,7 @@ module.exports = {
                     ]),
                     Trade.findOneAndUpdate(tradeObj._id, {status: "finished"}, {new: true})
                 ])
-                console.log("successfully traded :", responses)
+                // console.log("successfully traded :", responses)
             }
             res.status(202).send({
                 message: "the approve request was successfull"

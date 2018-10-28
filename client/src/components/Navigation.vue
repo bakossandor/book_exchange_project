@@ -71,7 +71,6 @@ export default {
             sideNav: null,
             menu: [
                 {icon: "home", title: "home", link: "/"},
-                {icon: "info", title: "about", link: "/about"}
             ]
         }
     },

@@ -1,29 +1,56 @@
-# book_exchange_project
+# book exchange project
 A book exchange application with client and server side code
 
-### dev process documentation
-2018.10.10.
-#### front-end
-* main routes registered
-* register method fully implemented connected with the backend
+### app is about
+User registration, book posting and changing
 
-#### back-end
-* register method implemented
+### app features
+* user registration, user login
+* client and server user validation - client with vuetify, server with Joi and mongoose
+* password crypting
+* jwt webtoken authentication
+* auto login
+* saving documents to MongDb, creating Schema and modell with mongoose
+* client side request and server side pagination in the db
+* client side route guards
+* vuex state management
+* lazy loading user pages
 
-before 2018.10.10
-#### front-end
-* project created by vue-cli-3
-* navbar skeleton created
-* views created
-* axoios connected
-* token decoding method added
-* saving tokone to localstorage added
+### front-end
+* Vue.js
+* Vuetify
+* Material design
 
-#### back-end
-* server up
-* db up
-* app router initiated
-* register - login method implemented
-* register validation policy added
-* user model created
-* login token validation is ready
+### back-end
+* Node.js
+* Express.js
+* MongoDB
+
+### to run the app
+* need to configure the database - it can be a remote or a local, but you have to configure it
+```
+"./server/config/config.js"
+```
+
+* need to have vue-cli
+[vue.js](https://vuejs.org/)
+
+
+#### you need to run two server
+the client which is bundle the Vue dev build together - and the node server
+
+* spin up the server
+```
+cd server
+```
+```
+node server.js
+```
+
+* bundle and host the Vue app
+```
+cd client
+```
+```
+npm run serve
+```

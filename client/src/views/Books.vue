@@ -134,7 +134,15 @@ export default {
 		listedBy() {
 			return this.$store.state.user_id
 		}
-	}
+    },
+    created() {
+        this.$root.$on("booksReload", () => {
+            this.fillTheTable()
+        })
+    },
+    destroyed() {
+        this.$root.$off("booksReload")
+    }
 };
 </script>
 <style lang="sass" scoped>

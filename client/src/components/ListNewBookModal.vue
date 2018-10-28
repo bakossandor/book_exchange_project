@@ -87,13 +87,14 @@ export default {
 					listedByUserName: this.listedByUserName
 				}
 				const bookResponse = await BookService.add(book)
-				console.log("I created a new book: ---  ", bookResponse)
-				this.dialog = false
 				this.bookData.title = ""
 				this.bookData.author = ""
 				this.bookData.otherInfo = ""
+				this.$root.$emit("reload")
+				this.dialog = false
+				
 			} catch (error) {
-				console.log("error with posting the book: ", error)
+				console.log("error creating a new book: ", error)
 			}
 		},
 	},

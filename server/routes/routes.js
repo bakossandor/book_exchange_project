@@ -4,7 +4,7 @@ const JWT = require("../util/token")
 const BookController = require("../controllers/bookController")
 
 module.exports = (app) => {
-    // app.use("/api", JWT.jwtVerify)
+    app.use("/api", JWT.jwtVerify)
 
     app.post("/register", 
         RegisterValidation.register,
@@ -14,8 +14,6 @@ module.exports = (app) => {
     app.post("/login", RegisterController.login)
 
     app.get("/api/user/:id/book", BookController.getUserBooks)
-
-    app.get("/api/user/:id/tradebooks", BookController.getTradeBooks)
 
     app.get("/api/book", BookController.getBooks)
 

@@ -72,6 +72,10 @@ export default {
 
         activate(id) {
             BookService.status(id, {status: "listed"})
+                .then(() => {
+                    this.fillTheTable()
+                    this.$root.$emit("reload")
+                })
         },
         remove(id) {
             BookService.remove(id)
@@ -95,6 +99,14 @@ export default {
 		_id() {
 			return this.$store.state.user_id
 		}
-	}
+    },
+    created() {
+        this.$root.$on("realoadArchive", () => {
+            this.fillTheTable()
+        })
+    },
+    destroyed() {
+        this.$root.$off("realoadArchive")
+    }
 }
 </script>

@@ -78,7 +78,6 @@ export default {
                 .then((data) => {
                     this.table.items = data.data.books
                     this.table.total = data.data.total
-                    console.log("my table books: ", this.table.items)
                 })
                 .catch(error => console.log("error getting the data :", error))
                 .then(this.table.loading = false)
@@ -86,6 +85,10 @@ export default {
 
         archive(id) {
             BookService.status(id, {status: "archived"})
+                .then(() => {
+                    this.fillTheTable()
+                    this.$root.$emit("reloadArchive")
+                })
         },
         acceptRequest(book) {
             console.log("accept request :", book)
@@ -94,8 +97,12 @@ export default {
                 initiaterBook: book.counterbook._id,
                 tradeInfo: book.tradeInfo
             }
-            console.log("accept body: ", body)
             BookService.acceptRequest(body)
+                .then(() => {
+                    console.log("it is running")
+                    this.fillTheTable()
+                    this.$root.$emit("reloadTrade")
+                })
         },
         declineRequest(book) {
             console.log("decline request :", book)
@@ -125,6 +132,14 @@ export default {
         userEmail() {
 			return this.$store.state.email
 		},
-	}
+    },
+    created() {
+        this.$root.$on("reload", () => {
+            this.fillTheTable()
+        })
+    },
+    destroyed() {
+        this.$root.$off("reload")
+    }
 }
 </script>
